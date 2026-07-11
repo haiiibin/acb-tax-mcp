@@ -1,5 +1,6 @@
 # acb-tax-mcp
 
+[![CI](https://github.com/haiiibin/acb-tax-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/haiiibin/acb-tax-mcp/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/acb-tax-mcp)](https://pypi.org/project/acb-tax-mcp/)
 [![Python](https://img.shields.io/pypi/pyversions/acb-tax-mcp)](https://pypi.org/project/acb-tax-mcp/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
