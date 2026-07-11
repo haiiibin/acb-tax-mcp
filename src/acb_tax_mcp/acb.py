@@ -95,6 +95,18 @@ def compute(transactions) -> dict:
     dispositions: list[dict] = []
     warnings: list[str] = []
 
+    # Foreign-currency trades without an FX rate silently produce CAD-wrong
+    # numbers; that is the worst failure mode for a tax tool, so warn loudly.
+    flagged_fx: set[tuple[str, str]] = set()
+    for t in txns:
+        if t.currency != "CAD" and t.fx_rate == 1 and (t.security, t.currency) not in flagged_fx:
+            flagged_fx.add((t.security, t.currency))
+            warnings.append(
+                f"{t.security}: trades are in {t.currency} but fx_rate is 1; amounts are "
+                f"being treated as CAD. Supply the transaction-date CAD exchange rate "
+                f"per trade or the ACB and gains will be wrong."
+            )
+
     for t in txns:
         st = state.setdefault(t.security, {"shares": Decimal(0), "acb": Decimal(0)})
 

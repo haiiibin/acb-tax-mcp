@@ -13,11 +13,16 @@ from decimal import Decimal, InvalidOperation
 VALID_ACTIONS = {"buy", "sell"}
 
 
+def _is_blank(value) -> bool:
+    """True for values that mean "cell left empty" (None or blank string)."""
+    return value is None or (isinstance(value, str) and not value.strip())
+
+
 def _to_decimal(value, name: str) -> Decimal:
     if isinstance(value, Decimal):
         return value
-    if value is None or value == "":
-        return Decimal(0)
+    if _is_blank(value):
+        raise ValueError(f"{name!r} is required but was left empty.")
     try:
         return Decimal(str(value))
     except (InvalidOperation, ValueError) as exc:
@@ -30,7 +35,13 @@ def _to_date(value) -> date:
     if isinstance(value, date):
         return value
     text = str(value).strip()
-    for fmt in ("%Y-%m-%d", "%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y"):
+    # ISO date or datetime ("2024-01-01", "2024-01-01 09:30:00", "...T09:30:00"),
+    # as commonly produced by spreadsheet/broker exports.
+    try:
+        return datetime.fromisoformat(text).date()
+    except ValueError:
+        pass
+    for fmt in ("%Y/%m/%d", "%m/%d/%Y", "%d/%m/%Y"):
         try:
             return datetime.strptime(text, fmt).date()
         except ValueError:
@@ -94,12 +105,20 @@ def parse_transaction(raw: dict) -> Transaction:
     if price < 0:
         raise ValueError(f"'price' cannot be negative, got {price}.")
 
-    commission = _to_decimal(raw.get("commission", 0), "commission")
-    fx_rate = _to_decimal(raw.get("fx_rate", 1), "fx_rate")
+    # Optional fields: a blank cell (common in CSV exports where the column
+    # exists but only some rows fill it) falls back to the default.
+    raw_commission = raw.get("commission")
+    commission = Decimal(0) if _is_blank(raw_commission) else _to_decimal(raw_commission, "commission")
+    if commission < 0:
+        raise ValueError(f"'commission' cannot be negative, got {commission}.")
+
+    raw_fx = raw.get("fx_rate")
+    fx_rate = Decimal(1) if _is_blank(raw_fx) else _to_decimal(raw_fx, "fx_rate")
     if fx_rate <= 0:
         raise ValueError(f"'fx_rate' must be positive, got {fx_rate}.")
 
-    currency = str(raw.get("currency", "CAD")).strip().upper() or "CAD"
+    raw_currency = raw.get("currency")
+    currency = "CAD" if _is_blank(raw_currency) else str(raw_currency).strip().upper()
 
     return Transaction(
         date=_to_date(raw.get("date")),
@@ -110,7 +129,7 @@ def parse_transaction(raw: dict) -> Transaction:
         commission=commission,
         currency=currency,
         fx_rate=fx_rate,
-        note=str(raw.get("note", "")),
+        note="" if _is_blank(raw.get("note")) else str(raw.get("note")),
     )
 
 
