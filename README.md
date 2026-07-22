@@ -1,8 +1,12 @@
 # acb-tax-mcp
 
+<!-- mcp-name: io.github.haiiibin/acb-tax-mcp -->
+
 [![CI](https://github.com/haiiibin/acb-tax-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/haiiibin/acb-tax-mcp/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/acb-tax-mcp)](https://pypi.org/project/acb-tax-mcp/)
+[![PyPI Downloads](https://img.shields.io/pypi/dm/acb-tax-mcp)](https://pypi.org/project/acb-tax-mcp/)
 [![Python](https://img.shields.io/pypi/pyversions/acb-tax-mcp)](https://pypi.org/project/acb-tax-mcp/)
+[![Glama](https://glama.ai/mcp/servers/haiiibin/acb-tax-mcp/badges/score.svg)](https://glama.ai/mcp/servers/haiiibin/acb-tax-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > An [MCP](https://modelcontextprotocol.io) server that computes Canadian **adjusted cost base (ACB)** and **capital gains** from your trade history: average-cost tracking, per-disposition gains, and **superficial-loss** detection, returned as structured JSON.
