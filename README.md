@@ -27,6 +27,8 @@ Works with **Claude Desktop**, **Claude Code**, **Cursor**, or any MCP-compatibl
 | `acb_summary` | Just current holdings and their book cost (handy for unrealized gains against a market price). |
 | `capital_gains_report` | A Schedule-3-style report for one tax year: each disposition plus totals, net capital gain, and taxable gain (50% inclusion). |
 | `check_superficial_losses` | Flags losses caught by the 30-day rule, with the denied (deferred) amount per event. |
+| `unrealized_gains` | Current holdings' ACB against market prices you supply: per-position and total unrealized gain in dollars and percent (foreign-quoted securities take a price + fx_rate pair). |
+| `normalize_broker_csv` | Turns a raw broker activity export into clean transactions: maps common column aliases ("Trade Date", "Activity Type", "Quantity"...), keeps buy/sell rows (DRIP counts as a buy), cleans "$1,200"/"(9.95)" formats, and reports every skipped row with a reason. |
 
 Implements the CRA **average-cost method** (all shares of a security pool into one ACB; gains are against the average, not FIFO) and the **superficial-loss rule** (loss denied and deferred into the ACB of substitute shares bought within 30 days before or after the sale). Commissions and per-trade **CAD FX conversion** are handled.
 
@@ -88,7 +90,7 @@ Give the tools a list of transactions (or a path to a `.csv` / `.json` file).
 | `fx_rate` | no | trade currency to CAD, e.g. `1.35` for USD (default 1) |
 | `note` | no | free text |
 
-CSV uses the same column names as a header row.
+CSV uses the same column names as a header row. If your broker's export uses different headers ("Trade Date", "Activity Type", "Symbol", "Quantity"...), run it through `normalize_broker_csv` first.
 
 ---
 
@@ -98,6 +100,8 @@ CSV uses the same column names as a header row.
 - *"What's my capital-gains report for 2024?"*
 - *"Did any of these sales trigger a superficial loss?"*
 - *"What's my current book cost for XEQT?"*
+- *"Here's my RBC activity export -- clean it up and compute my ACB."*
+- *"XEQT is at $35.20 and VTI at $305.40 USD (1.37 CAD): what are my unrealized gains?"*
 
 ### Example
 

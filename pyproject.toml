@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "acb-tax-mcp"
-version = "0.1.2"
+version = "0.2.0"
 description = "MCP server for Canadian adjusted cost base (ACB) and capital gains: average-cost tracking, per-disposition gains, and superficial-loss detection for LLM agents."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -31,6 +31,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Office/Business :: Financial :: Accounting",
 ]
 dependencies = [
@@ -38,7 +39,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0"]
+dev = ["pytest>=8.0", "ruff>=0.5"]
 
 [project.scripts]
 acb-tax-mcp = "acb_tax_mcp.server:main"
@@ -53,3 +54,10 @@ packages = ["src/acb_tax_mcp"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "UP", "B"]

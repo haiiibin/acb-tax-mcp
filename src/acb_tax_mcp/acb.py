@@ -13,7 +13,7 @@ ISO date strings).
 from __future__ import annotations
 
 from datetime import date, timedelta
-from decimal import ROUND_HALF_UP, Decimal
+from decimal import ROUND_HALF_UP, Decimal, InvalidOperation
 
 from acb_tax_mcp.models import Transaction, parse_transactions
 
@@ -188,6 +188,104 @@ def compute(transactions) -> dict:
         "holdings": holdings,
         "dispositions": dispositions,
         "summary": summary,
+        "warnings": warnings,
+    }
+
+
+def _parse_price_entry(security, value) -> tuple[Decimal, Decimal]:
+    """Accept a bare number (price already in CAD) or {"price": x, "fx_rate": y}."""
+    if isinstance(value, dict):
+        if "price" not in value:
+            raise ValueError(f"market_prices[{security!r}]: object form requires a 'price' key.")
+        raw_price, raw_fx = value["price"], value.get("fx_rate", 1)
+    else:
+        raw_price, raw_fx = value, 1
+    try:
+        price = Decimal(str(raw_price))
+        fx = Decimal(str(raw_fx))
+    except InvalidOperation as exc:
+        raise ValueError(f"market_prices[{security!r}]: not a valid number: {value!r}") from exc
+    if price < 0:
+        raise ValueError(f"market_prices[{security!r}]: price cannot be negative.")
+    if fx <= 0:
+        raise ValueError(f"market_prices[{security!r}]: fx_rate must be positive.")
+    return price, fx
+
+
+def unrealized(transactions, market_prices) -> dict:
+    """Unrealized gain per position: current market value against the ACB pool.
+
+    ``market_prices`` maps security to either a CAD price or an object
+    ``{"price": ..., "fx_rate": ...}`` for securities quoted in a foreign
+    currency. Held securities without a price are reported in
+    ``missing_prices`` and excluded from the totals.
+    """
+    if not isinstance(market_prices, dict) or not market_prices:
+        raise ValueError(
+            "'market_prices' must be a non-empty object mapping security to its current price."
+        )
+    prices = {
+        str(sec).strip().upper(): _parse_price_entry(sec, val)
+        for sec, val in market_prices.items()
+    }
+
+    result = compute(transactions)
+    positions: list[dict] = []
+    missing: list[str] = []
+    total_acb = Decimal(0)
+    total_mv = Decimal(0)
+
+    for h in result["holdings"]:
+        sec = h["security"]
+        if sec not in prices:
+            missing.append(sec)
+            continue
+        price, fx = prices[sec]
+        shares = Decimal(str(h["shares"]))
+        acb_total = Decimal(str(h["total_acb"]))
+        market_value = shares * price * fx
+        gain = market_value - acb_total
+        positions.append(
+            {
+                "security": sec,
+                "shares": h["shares"],
+                "total_acb": h["total_acb"],
+                "acb_per_share": h["acb_per_share"],
+                "market_price": float(price),
+                "fx_rate": float(fx),
+                "market_value": _money(market_value),
+                "unrealized_gain": _money(gain),
+                "unrealized_gain_pct": (
+                    round(float(gain / acb_total * 100), 2) if acb_total else None
+                ),
+            }
+        )
+        total_acb += acb_total
+        total_mv += market_value
+
+    warnings = list(result["warnings"])
+    if missing:
+        warnings.append(
+            "No market price provided for: " + ", ".join(missing) + "; excluded from totals."
+        )
+    unknown = sorted(set(prices) - {h["security"] for h in result["holdings"]})
+    if unknown:
+        warnings.append(
+            "market_prices includes securities not currently held: " + ", ".join(unknown) + "."
+        )
+
+    total_gain = total_mv - total_acb
+    return {
+        "positions": positions,
+        "totals": {
+            "total_acb": _money(total_acb),
+            "market_value": _money(total_mv),
+            "unrealized_gain": _money(total_gain),
+            "unrealized_gain_pct": (
+                round(float(total_gain / total_acb * 100), 2) if total_acb else None
+            ),
+        },
+        "missing_prices": missing,
         "warnings": warnings,
     }
 

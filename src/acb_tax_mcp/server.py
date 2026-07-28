@@ -12,7 +12,7 @@ from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
-from acb_tax_mcp import acb, loaders
+from acb_tax_mcp import acb, broker, loaders
 
 mcp = FastMCP("acb-tax")
 
@@ -115,9 +115,59 @@ def check_superficial_losses(
     }
 
 
+def unrealized_gains(
+    market_prices: dict[str, Any],
+    transactions: list[dict[str, Any]] | None = None,
+    csv_path: str | None = None,
+) -> dict:
+    """Compute unrealized gains: current holdings' book cost (ACB) against market prices.
+
+    For each security still held, returns shares, total ACB, current market value
+    and the unrealized gain in dollars and percent, plus portfolio totals.
+    'market_prices' maps each security to its current price: either a number
+    already in CAD (e.g. {"XEQT": 35.20}) or, for foreign-quoted securities, an
+    object with the trade-currency price and the CAD exchange rate
+    (e.g. {"VTI": {"price": 305.40, "fx_rate": 1.37}}). Held securities without a
+    price are listed in 'missing_prices' and excluded from totals. Accepts inline
+    'transactions' or a 'csv_path'. {tx_shape}
+    """
+    return acb.unrealized(_resolve(transactions, csv_path), market_prices)
+
+
+def normalize_broker_csv(
+    csv_path: str | None = None, rows: list[dict[str, Any]] | None = None
+) -> dict:
+    """Convert a raw broker activity export into transactions the other tools accept.
+
+    Broker exports rarely match the documented headers. This tool maps common
+    column aliases ("Trade Date", "Activity Type", "Symbol", "Quantity", ...),
+    keeps only buy/sell rows (reinvestment/DRIP rows count as buys, since they
+    add to ACB), cleans number formats ("1,200", "$9.99", parenthesized
+    negatives, signed quantities), and returns ready-to-use 'transactions' plus a
+    per-row 'skipped' list (dividends, deposits, transfers, unparseable rows)
+    with reasons, so nothing is dropped silently. Pass the export as 'csv_path'
+    (CSV/TSV/JSON) or inline as 'rows'. Feed the returned transactions straight
+    into calculate_acb, capital_gains_report or unrealized_gains.
+    """
+    if csv_path:
+        raw = loaders.load_transactions_file(csv_path)
+    elif rows is not None:
+        raw = rows
+    else:
+        raise ValueError("Provide either 'csv_path' (broker export file) or 'rows' (inline list).")
+    return broker.normalize(raw)
+
+
 # Patch the shared note into each docstring, THEN register (FastMCP reads
 # __doc__ at registration time).
-for _fn in (calculate_acb, acb_summary, capital_gains_report, check_superficial_losses):
+for _fn in (
+    calculate_acb,
+    acb_summary,
+    capital_gains_report,
+    check_superficial_losses,
+    unrealized_gains,
+    normalize_broker_csv,
+):
     if _fn.__doc__ and "{tx_shape}" in _fn.__doc__:
         _fn.__doc__ = _fn.__doc__.replace("{tx_shape}", _TX_SHAPE)
     mcp.tool()(_fn)

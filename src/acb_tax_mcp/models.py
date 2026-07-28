@@ -6,7 +6,7 @@ so ACB and capital gains are computed to the cent without binary-float drift.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date, datetime
 from decimal import Decimal, InvalidOperation
 
