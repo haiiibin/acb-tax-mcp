@@ -15,6 +15,8 @@ Ask your assistant *"what are my capital gains for 2024?"* or *"did I trigger an
 
 > ⚠️ **This is a calculation aid, not tax advice.** Verify every number before you file, and consult a professional for anything non-trivial. See [Limitations](#limitations).
 
+![acb-tax-mcp demo: one prompt cleans a broker export, reports 2025 capital gains and flags a superficial loss](docs/demo.gif)
+
 Works with **Claude Desktop**, **Claude Code**, **Cursor**, or any MCP-compatible client.
 
 ---
