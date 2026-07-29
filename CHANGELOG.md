@@ -4,6 +4,16 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.1] - 2026-07-28
+
+### Fixed
+
+- Pin `mcp>=1.2.0,<2`. MCP Python SDK 2.0 (released 2026-07-27) removes the
+  `mcp.server.fastmcp` import path (`FastMCP` became
+  `mcp.server.mcpserver.MCPServer`), so fresh installs resolving `mcp==2.0.0`
+  crashed on startup with `ModuleNotFoundError`. Migration to SDK v2 is
+  planned separately.
+
 ## [0.2.0] - 2026-07-27
 
 ### Added
@@ -58,6 +68,7 @@ All notable changes to this project are documented here. The format follows
 - CRA average-cost ACB engine with superficial-loss detection (61-day window,
   least-of-three test) and per-trade CAD FX conversion.
 
+[0.2.1]: https://github.com/haiiibin/acb-tax-mcp/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/haiiibin/acb-tax-mcp/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/haiiibin/acb-tax-mcp/releases/tag/v0.1.2
 [0.1.1]: https://github.com/haiiibin/acb-tax-mcp/releases/tag/v0.1.2
