@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-07-28
+
+### Added
+
+- MCP SDK 2.x support: the server now imports `MCPServer` on SDK 2.x and falls
+  back to `FastMCP` on SDK 1.x, and the dependency pin widens to
+  `mcp>=1.2.0,<3`. Verified against both SDK lines.
+
 ## [0.2.1] - 2026-07-28
 
 ### Fixed
@@ -68,6 +76,7 @@ All notable changes to this project are documented here. The format follows
 - CRA average-cost ACB engine with superficial-loss detection (61-day window,
   least-of-three test) and per-trade CAD FX conversion.
 
+[0.3.0]: https://github.com/haiiibin/acb-tax-mcp/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/haiiibin/acb-tax-mcp/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/haiiibin/acb-tax-mcp/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/haiiibin/acb-tax-mcp/releases/tag/v0.1.2
