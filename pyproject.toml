@@ -48,6 +48,7 @@ acb-tax-mcp = "acb_tax_mcp.server:main"
 Homepage = "https://github.com/haiiibin/acb-tax-mcp"
 Repository = "https://github.com/haiiibin/acb-tax-mcp"
 Issues = "https://github.com/haiiibin/acb-tax-mcp/issues"
+Changelog = "https://github.com/haiiibin/acb-tax-mcp/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/acb_tax_mcp"]
