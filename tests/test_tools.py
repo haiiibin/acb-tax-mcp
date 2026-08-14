@@ -10,6 +10,7 @@ EXPECTED = {
     "calculate_acb",
     "acb_summary",
     "capital_gains_report",
+    "schedule3_summary",
     "check_superficial_losses",
     "unrealized_gains",
     "normalize_broker_csv",

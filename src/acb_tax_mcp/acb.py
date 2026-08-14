@@ -330,3 +330,89 @@ def _summarize(dispositions: list[dict]) -> dict:
             }
         )
     return {"by_tax_year": years, "inclusion_rate": float(INCLUSION_RATE)}
+
+
+def schedule3(transactions, tax_year: int | None = None) -> dict:
+    """Aggregate dispositions into one row per security, Schedule 3 column shape.
+
+    Rows follow the "Publicly traded shares, mutual fund units..." section:
+    number of shares, proceeds of disposition (gross, before commissions),
+    adjusted cost base, outlays and expenses (commissions on the sales), and
+    gain or loss with the superficial-loss rule already applied.
+    """
+    if transactions and isinstance(transactions[0], Transaction):
+        txns = list(transactions)
+    else:
+        txns = parse_transactions(transactions)
+    result = compute(txns)
+
+    dispositions = result["dispositions"]
+    available_years = sorted({int(d["date"][:4]) for d in dispositions})
+    if tax_year is not None:
+        dispositions = [d for d in dispositions if int(d["date"][:4]) == int(tax_year)]
+
+    buy_years: dict[str, set[int]] = {}
+    for t in txns:
+        if t.action == "buy":
+            buy_years.setdefault(t.security, set()).add(t.date.year)
+
+    acc: dict[str, dict[str, Decimal]] = {}
+    for d in dispositions:
+        row = acc.setdefault(
+            d["security"],
+            {
+                "shares": Decimal(0),
+                "gross": Decimal(0),
+                "acb": Decimal(0),
+                "outlays": Decimal(0),
+                "gain": Decimal(0),
+                "denied": Decimal(0),
+            },
+        )
+        # Disposition 'proceeds' are net of commission; Schedule 3 wants gross
+        # proceeds with the commission shown separately under outlays.
+        row["shares"] += Decimal(str(d["shares_sold"]))
+        row["gross"] += Decimal(str(d["proceeds"])) + Decimal(str(d["outlays"]))
+        row["acb"] += Decimal(str(d["acb"]))
+        row["outlays"] += Decimal(str(d["outlays"]))
+        row["gain"] += Decimal(str(d["capital_gain"]))
+        row["denied"] += Decimal(str(d["superficial_loss_denied"]))
+
+    rows = []
+    totals = {"gross": Decimal(0), "acb": Decimal(0), "outlays": Decimal(0), "gain": Decimal(0)}
+    for security in sorted(acc):
+        row = acc[security]
+        rows.append(
+            {
+                "security": security,
+                "acquisition_years": sorted(buy_years.get(security, set())),
+                "number_of_shares": _qty(row["shares"]),
+                "proceeds_of_disposition": _money(row["gross"]),
+                "adjusted_cost_base": _money(row["acb"]),
+                "outlays_and_expenses": _money(row["outlays"]),
+                "gain_or_loss": _money(row["gain"]),
+                "superficial_loss_denied": _money(row["denied"]),
+            }
+        )
+        for key in totals:
+            totals[key] += row[key]
+
+    return {
+        "tax_year": int(tax_year) if tax_year is not None else None,
+        "available_years": available_years,
+        "rows": rows,
+        "totals": {
+            "proceeds_of_disposition": _money(totals["gross"]),
+            "adjusted_cost_base": _money(totals["acb"]),
+            "outlays_and_expenses": _money(totals["outlays"]),
+            "gain_or_loss": _money(totals["gain"]),
+        },
+        "notes": [
+            "proceeds_of_disposition is gross (before commissions); commissions are "
+            "under outlays_and_expenses, matching the Schedule 3 columns.",
+            "gain_or_loss already reflects any superficial-loss denial.",
+            "acquisition_years lists every year the security was bought, since the "
+            "average-cost pool has no single acquisition year.",
+        ],
+        "warnings": result["warnings"],
+    }

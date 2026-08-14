@@ -4,13 +4,24 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and versions follow
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.4.0] - 2026-08-14
 
 ### Added
 
+- New `schedule3_summary` tool: aggregates dispositions into one row per
+  security in the Schedule 3 "publicly traded shares" column shape (number of
+  shares, gross proceeds of disposition, adjusted cost base, outlays and
+  expenses, gain or loss after the superficial-loss rule), with acquisition
+  years, per-column totals, an optional `tax_year` filter, and the list of
+  years that have dispositions.
 - `CONTRIBUTING.md` (dev setup, Decimal/CRA correctness rules, dual-SDK
-  testing notes) and GitHub issue templates for bug reports and feature
-  requests.
+  testing notes), `CODE_OF_CONDUCT.md`, `SECURITY.md`, and GitHub issue
+  templates for bug reports and feature requests.
+
+### Changed
+
+- Releases now publish to the official MCP Registry automatically on tag via
+  GitHub OIDC, alongside the existing PyPI trusted publishing.
 
 ## [0.3.0] - 2026-07-28
 

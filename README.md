@@ -29,6 +29,7 @@ Works with **Claude Desktop**, **Claude Code**, **Cursor**, or any MCP-compatibl
 | `calculate_acb` | Full calculation: current holdings (shares, total ACB, ACB per share), every disposition with proceeds/ACB/outlays/gain, per-year summaries, and warnings. |
 | `acb_summary` | Just current holdings and their book cost (handy for unrealized gains against a market price). |
 | `capital_gains_report` | A Schedule-3-style report for one tax year: each disposition plus totals, net capital gain, and taxable gain (50% inclusion). |
+| `schedule3_summary` | One aggregated row per security in the exact Schedule 3 column shape: shares, gross proceeds, ACB, outlays (commissions), gain/loss after the superficial-loss rule, acquisition years, and totals -- the lines you actually transcribe when filing. |
 | `check_superficial_losses` | Flags losses caught by the 30-day rule, with the denied (deferred) amount per event. |
 | `unrealized_gains` | Current holdings' ACB against market prices you supply: per-position and total unrealized gain in dollars and percent (foreign-quoted securities take a price + fx_rate pair). |
 | `normalize_broker_csv` | Turns a raw broker activity export into clean transactions: maps common column aliases ("Trade Date", "Activity Type", "Quantity"...), keeps buy/sell rows (DRIP counts as a buy), cleans "$1,200"/"(9.95)" formats, and reports every skipped row with a reason. |

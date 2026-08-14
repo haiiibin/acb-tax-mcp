@@ -98,6 +98,28 @@ def capital_gains_report(
     }
 
 
+def schedule3_summary(
+    tax_year: int | None = None,
+    transactions: list[dict[str, Any]] | None = None,
+    csv_path: str | None = None,
+) -> dict:
+    """One row per security in the shape of Schedule 3's publicly traded shares section.
+
+    Aggregates dispositions (optionally limited to 'tax_year') into one line per
+    security with the columns transcribed onto Schedule 3: number of shares,
+    proceeds of disposition (gross, before commissions), adjusted cost base,
+    outlays and expenses (sale commissions), and gain or loss with the
+    superficial-loss rule already applied, plus acquisition years, per-column
+    totals, and the list of years that have dispositions. capital_gains_report
+    lists every individual disposition; use this tool when the user wants the
+    aggregated filing lines instead. Accepts inline 'transactions' or a
+    'csv_path'. {tx_shape}
+
+    This is a calculation aid, not tax advice; verify results before filing.
+    """
+    return acb.schedule3(_resolve(transactions, csv_path), tax_year=tax_year)
+
+
 def check_superficial_losses(
     transactions: list[dict[str, Any]] | None = None, csv_path: str | None = None
 ) -> dict:
@@ -169,6 +191,7 @@ for _fn in (
     calculate_acb,
     acb_summary,
     capital_gains_report,
+    schedule3_summary,
     check_superficial_losses,
     unrealized_gains,
     normalize_broker_csv,
