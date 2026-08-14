@@ -39,6 +39,8 @@ Implements the CRA **average-cost method** (all shares of a security pool into o
 
 ## Install
 
+No install needed to try it: open the [Glama server page](https://glama.ai/mcp/servers/haiiibin/acb-tax-mcp) and use **Try in Browser** to call the tools against a sandbox with a couple of sample transactions.
+
 Requires Python 3.10+.
 
 ```bash
