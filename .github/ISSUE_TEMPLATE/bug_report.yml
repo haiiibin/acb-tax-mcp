@@ -1,0 +1,39 @@
+name: Bug report
+description: Wrong numbers, an error, or unexpected behavior
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: acb-tax-mcp version
+      placeholder: "0.3.0 (pip show acb-tax-mcp)"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Python / MCP SDK / OS
+      placeholder: "Python 3.12, mcp 2.0.0, Windows 11"
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal transaction list that reproduces the problem
+      description: >
+        A short anonymized list of transactions (date, action, security,
+        shares, price) plus the tool call you made. Use fake security names
+        if you prefer; never post real account numbers, names, or full
+        statements.
+      render: json
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs. actual result
+      description: >
+        What number or behavior did you expect (with the CRA rule if you know
+        it), and what did you get? Include the full error message if any.
+    validations:
+      required: true

@@ -7,6 +7,7 @@
 [![PyPI Downloads](https://img.shields.io/pypi/dm/acb-tax-mcp)](https://pypi.org/project/acb-tax-mcp/)
 [![Python](https://img.shields.io/pypi/pyversions/acb-tax-mcp)](https://pypi.org/project/acb-tax-mcp/)
 [![Glama](https://glama.ai/mcp/servers/haiiibin/acb-tax-mcp/badges/score.svg)](https://glama.ai/mcp/servers/haiiibin/acb-tax-mcp)
+[![Listed in awesome-mcp-servers](https://img.shields.io/badge/awesome--mcp--servers-listed-8A2BE2)](https://github.com/punkpeye/awesome-mcp-servers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 > An [MCP](https://modelcontextprotocol.io) server that computes Canadian **adjusted cost base (ACB)** and **capital gains** from your trade history: average-cost tracking, per-disposition gains, and **superficial-loss** detection, returned as structured JSON.
