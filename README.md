@@ -98,6 +98,8 @@ Give the tools a list of transactions (or a path to a `.csv` / `.json` file).
 
 CSV uses the same column names as a header row. If your broker's export uses different headers ("Trade Date", "Activity Type", "Symbol", "Quantity"...), run it through `normalize_broker_csv` first.
 
+Want something to try immediately? [`examples/sample_trades.csv`](examples/sample_trades.csv) is a ready-made broker-style export with aliased headers, `$`-formatted numbers, a DRIP row, a dividend row (skipped with a reason), a USD trade with FX, and a superficial-loss scenario. Ask your assistant to clean it with `normalize_broker_csv` and run `calculate_acb` on the result.
+
 ---
 
 ## Usage

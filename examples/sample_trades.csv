@@ -1,0 +1,11 @@
+Trade Date,Activity Type,Symbol,Quantity,Price,Commission,Currency,Exchange Rate,Description
+2024-01-15,Buy,XEQT,100,$28.50,$9.95,CAD,,Initial position
+2024-03-10,Buy,XEQT,50,"$31.00",$9.95,CAD,,Adding on strength
+2024-06-20,Dividend,XEQT,,,,CAD,,Cash dividend (not a trade; the normalizer skips it with a reason)
+2024-07-02,Reinvest,XEQT,2,$30.10,$0.00,CAD,,DRIP counts as a buy
+2024-09-05,Sold,XEQT,-60,$33.25,$9.95,CAD,,Partial exit (signed quantity on purpose)
+2024-02-01,Buy,VTI,20,$245.00,$1.00,USD,1.35,US-listed ETF bought in USD
+2024-11-14,Sell,VTI,20,$232.00,$1.00,USD,1.39,USD loss; FX moves the CAD number
+2025-03-03,Buy,BNS,40,$64.00,$9.95,CAD,,Bank position
+2025-04-10,Sell,BNS,40,$58.50,$9.95,CAD,,Sold at a loss
+2025-04-25,Buy,BNS,40,$57.75,$9.95,CAD,,Rebuy 15 days later: superficial-loss rule applies
