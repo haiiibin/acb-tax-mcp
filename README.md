@@ -7,6 +7,7 @@
 [![PyPI Downloads](https://img.shields.io/pypi/dm/acb-tax-mcp)](https://pypi.org/project/acb-tax-mcp/)
 [![Python](https://img.shields.io/pypi/pyversions/acb-tax-mcp)](https://pypi.org/project/acb-tax-mcp/)
 [![Glama](https://glama.ai/mcp/servers/haiiibin/acb-tax-mcp/badges/score.svg)](https://glama.ai/mcp/servers/haiiibin/acb-tax-mcp)
+[![MCP Registry](https://img.shields.io/badge/MCP%20Registry-io.github.haiiibin%2Facb--tax--mcp-6d4aff)](https://registry.modelcontextprotocol.io/v0/servers?search=io.github.haiiibin/acb-tax-mcp&version=latest)
 [![Listed in awesome-mcp-servers](https://img.shields.io/badge/awesome--mcp--servers-listed-8A2BE2)](https://github.com/punkpeye/awesome-mcp-servers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
