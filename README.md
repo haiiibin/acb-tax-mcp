@@ -45,6 +45,8 @@ No install needed to try it: open the [Glama server page](https://glama.ai/mcp/s
 
 Requires Python 3.10+.
 
+Works with MCP Python SDK 1.x and 2.x (`mcp>=1.2.0,<3`): the 2.0 rename of `FastMCP` to `MCPServer` is handled by an import shim, and CI runs the test suite on both majors.
+
 ```bash
 uv tool install acb-tax-mcp      # or:  pip install acb-tax-mcp
 ```
