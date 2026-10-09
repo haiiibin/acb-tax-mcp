@@ -1,25 +1,20 @@
 """MCP server exposing the ACB / capital-gains tools.
 
 Tool docstrings are plain triple-quoted strings (never f-strings) so ``__doc__``
-is set and FastMCP can read them as the descriptions the LLM sees. The shared
+is set and MCPServer can read them as the descriptions the LLM sees. The shared
 transaction-shape note is injected into each docstring *before* the tool is
-registered, because FastMCP captures ``__doc__`` at registration time.
+registered, because MCPServer captures ``__doc__`` at registration time.
 """
 
 from __future__ import annotations
 
 from typing import Any
 
-try:
-    # MCP SDK 2.x: FastMCP was renamed to MCPServer and the module moved.
-    from mcp.server.mcpserver import MCPServer as FastMCP
-except ImportError:
-    # MCP SDK 1.x keeps the original path.
-    from mcp.server.fastmcp import FastMCP
+from mcp.server import MCPServer
 
 from acb_tax_mcp import acb, broker, loaders
 
-mcp = FastMCP("acb-tax")
+mcp = MCPServer("acb-tax")
 
 _TX_SHAPE = (
     "Each transaction is an object: date (YYYY-MM-DD), action ('buy' or 'sell'), "
@@ -185,7 +180,7 @@ def normalize_broker_csv(
     return broker.normalize(raw)
 
 
-# Patch the shared note into each docstring, THEN register (FastMCP reads
+# Patch the shared note into each docstring, THEN register (MCPServer reads
 # __doc__ at registration time).
 for _fn in (
     calculate_acb,

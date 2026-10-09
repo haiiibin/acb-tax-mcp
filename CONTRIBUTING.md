@@ -35,11 +35,11 @@ through 3.13.
 
 ## MCP SDK compatibility
 
-The server supports both MCP SDK 1.x (`mcp.server.fastmcp.FastMCP`) and 2.x
-(`mcp.server.mcpserver.MCPServer`) through the import shim in
-`src/acb_tax_mcp/server.py`. If you touch server wiring, run the tests against
-both majors; CI's `test-mcp1` job pins `mcp<2` to guard the fallback path, and
-the regular matrix exercises the current SDK.
+The server targets MCP Python SDK 2.x (`mcp>=2,<3`) through
+`mcp.server.MCPServer`. SDK 1.x is feature-frozen upstream (it stops at the
+2025-11-25 protocol revision and only receives critical fixes), so it is not
+supported and no import shim should be added for it; 0.4.0 was the last
+release that ran on 1.x.
 
 ## Pull request guidelines
 
